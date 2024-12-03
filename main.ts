@@ -1,26 +1,27 @@
 /**
- * Giá trị Analog của cảm biến
+ * Giá trị góc điều khiển Servo
  */
 /**
- * Giá trị (%) của cảm biến
+ * Giá trị Biến trở đọc được
  */
-let dataPercent = 0
-let dataAnalog = 0
-// Bật cổng Serial
-serial.setBaudRate(BaudRate.BaudRate115200)
+let angle = 0
+let pot = 0
 // Xóa toàn bộ nội dung trên LCD (nếu có)
 lcd.clearScreen()
-// Cho hiển thị tiêu đề trước
-lcd.displayText("Light Detector", 1, 1)
-lcd.displayText("[LDR] " + lcd.displaySymbol(lcd.Symbols.sym02), 1, 2)
+// Cho hiển thị tiêu đề trên LCD
+lcd.displayText("Pot  :", 1, 1)
+lcd.displayText("Servo:", 1, 2)
 basic.forever(function () {
-    // Đọc giá trị Analog của cảm biến và đổi ra thang (%)
-    dataAnalog = pins.analogReadPin(AnalogPin.P0)
-    dataPercent = Math.round(Math.map(dataAnalog, 0, 1023, 100, 0))
-    // Cho hiển thị giá trị (%) của cảm biến trên LCD
-    lcd.displayText("" + dataPercent + "%  ", 9, 2)
-    // Gửi giá trị (%) của cảm biến lên Serial
-    serial.writeLine("" + (dataPercent))
-    // Dừng 0.5s
-    basic.pause(500)
+    // Đọc giá trị Biến trở
+    pot = pins.analogReadPin(AnalogPin.P0)
+    // Chuyển đổi giá trị trên sang Góc tương ứng
+    angle = Math.round(Math.map(pot, 0, 1023, 0, 180))
+    // Hiển thị giá trị Biến trở lên LCD
+    lcd.displayText("" + pot + "   ", 8, 1)
+    // Hiển thị giá trị Góc lên LCD
+    lcd.displayText("" + angle + lcd.displaySymbol(lcd.Symbols.sym07) + "  ", 8, 2)
+    // Điều khiển Servo với giá trị Góc
+    pins.servoWritePin(AnalogPin.P12, angle)
+    // Dừng 0.01s
+    basic.pause(10)
 })
